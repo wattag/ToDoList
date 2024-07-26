@@ -19,12 +19,16 @@ class TaskController extends Controller
     public function store(CreateRequest $request): RedirectResponse
     {
         auth()->user()->tasks()->create($request->validated());
+
         return redirect(route('tasks.index'));
     }
 
     public function destroy(Task $task): RedirectResponse
     {
-        $task->delete();
+        if ($task->user_id === auth()->id()) {
+            $task->delete();
+        }
+
         return redirect(route('tasks.index'));
     }
 }
